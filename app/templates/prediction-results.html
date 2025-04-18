@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}預測結果 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-line me-2"></i>疲勞壽命預測結果
+            </div>
+            <div class="card-body">
+                <h4 class="mb-4">{{ results.model_name }} 模型預測結果</h4>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <i class="fas fa-chart-bar me-2"></i>評估指標
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>RMSE</th>
+                                        <td>{{ results.metrics.rmse|round(4) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>MAE</th>
+                                        <td>{{ results.metrics.mae|round(4) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>MAPE</th>
+                                        <td>{{ results.metrics.mape|round(2) }}%</td>
+                                    </tr>
+                                    <tr>
+                                        <th>R²</th>
+                                        <td>{{ results.metrics.r2|round(4) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>解釋方差</th>
+                                        <td>{{ results.metrics.explained_variance|round(4) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>最大誤差</th>
+                                        <td>{{ results.metrics.max_error|round(4) }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="plot-container">
+                            <img src="{{ url_for('static', filename='results/' + results.actual_vs_pred_path) }}" alt="實際值與預測值對比" class="img-fluid">
+                            <p class="mt-2"><small class="text-muted">實際疲勞壽命與預測疲勞壽命對比圖</small></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs" id="resultTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="residuals-tab" data-bs-toggle="tab" data-bs-target="#residuals" type="button" role="tab">殘差分析</button>
+                            </li>
+                            {% if results.importance_path %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="importance-tab" data-bs-toggle="tab" data-bs-target="#importance" type="button" role="tab">特徵重要性</button>
+                            </li>
+                            {% endif %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="sample-tab" data-bs-toggle="tab" data-bs-target="#sample" type="button" role="tab">樣本預測</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content mt-3" id="resultTabsContent">
+                            <div class="tab-pane fade show active" id="residuals" role="tabpanel">
+                                <div class="plot-container">
+                                    <img src="{{ url_for('static', filename='results/' + results.residuals_path) }}" alt="殘差分析" class="img-fluid">
+                                    <p class="mt-2"><small class="text-muted">殘差分析圖 - 顯示預測誤差的分佈和模式</small></p>
+                                </div>
+                            </div>
+                            {% if results.importance_path %}
+                            <div class="tab-pane fade" id="importance" role="tabpanel">
+                                <div class="plot-container">
+                                    <img src="{{ url_for('static', filename='results/' + results.importance_path) }}" alt="特徵重要性" class="img-fluid">
+                                    <p class="mt-2"><small class="text-muted">特徵重要性圖 - 顯示影響疲勞壽命的關鍵因素</small></p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="tab-pane fade" id="sample" role="tabpanel">
+                                <h5>樣本預測結果 (前20行)</h5>
+                                <div class="table-responsive">
+                                    {{ results.sample_results|safe }}
+                                </div>
+                                <p class="text-muted mt-2"><small>表格僅顯示前20筆結果，完整結果可下載CSV檔案。</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <a href="{{ url_for('download_file', filename=results.result_csv_path) }}" class="btn btn-primary me-2">
+                            <i class="fas fa-download me-2"></i>下載完整預測結果
+                        </a>
+                        <a href="{{ url_for('sensitivity_analysis') }}" class="btn btn-success me-2">
+                            <i class="fas fa-chart-area me-2"></i>進行敏感性分析
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>返回首頁
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

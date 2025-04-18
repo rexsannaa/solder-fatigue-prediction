@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}頁面不存在 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2 text-center">
+        <div class="card">
+            <div class="card-body py-5">
+                <h1 class="display-1 text-danger">404</h1>
+                <h2 class="mb-4">頁面不存在</h2>
+                <p class="lead mb-4">抱歉，您嘗試訪問的頁面無法找到。</p>
+                <p>可能的原因：</p>
+                <ul class="list-unstyled">
+                    <li>URL地址輸入錯誤</li>
+                    <li>頁面已被移除或重命名</li>
+                    <li>您點擊了失效的連結</li>
+                </ul>
+                <div class="mt-5">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-home me-2"></i>返回首頁
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

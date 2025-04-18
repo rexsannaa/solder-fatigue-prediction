@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}選擇目標變數 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-crosshairs me-2"></i>選擇目標變數
+            </div>
+            <div class="card-body">
+                <h5 class="mb-3">檔案上傳成功: {{ filename }}</h5>
+                <p class="text-muted mb-4">
+                    請選擇代表疲勞壽命的目標變數列。通常這個列名為 "Nf_pred" 或 "Nf_pred (cycles)"。
+                </p>
+                
+                <form action="{{ url_for('process_data') }}" method="post" class="mb-4">
+                    <div class="mb-3">
+                        <label for="target_column" class="form-label">選擇目標變數列</label>
+                        <select class="form-select" id="target_column" name="target_column" required>
+                            <option value="" selected disabled>-- 請選擇 --</option>
+                            {% for column in columns %}
+                            <option value="{{ column }}" {% if column in ['Nf_pred', 'Nf_pred (cycles)'] %}selected{% endif %}>{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">目標變數應該是您希望預測的疲勞壽命值</div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-cogs me-2"></i>處理數據並繼續
+                        </button>
+                        <a href="{{ url_for('upload_file') }}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-arrow-left me-2"></i>返回上傳頁面
+                        </a>
+                    </div>
+                </form>
+                
+                <div class="alert alert-info mt-4">
+                    <h5><i class="fas fa-info-circle me-2"></i>接下來會發生什麼？</h5>
+                    <p>選擇目標變數後，系統將自動執行以下操作：</p>
+                    <ol>
+                        <li>數據清理：處理缺失值和異常值</li>
+                        <li>特徵工程：基於材料力學和疲勞理論生成新特徵</li>
+                        <li>數據標準化：對特徵進行標準化處理</li>
+                        <li>數據分析：生成基本的數據統計和分析圖表</li>
+                    </ol>
+                    <p>處理完成後，您可以選擇模型進行預測。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

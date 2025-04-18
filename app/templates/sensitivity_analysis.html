@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}敏感性分析 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-2"></i>特徵敏感性分析
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    敏感性分析可幫助您了解各個特徵對疲勞壽命預測的影響程度。選擇一個或兩個特徵進行分析，系統將顯示該特徵如何影響預測結果。
+                </p>
+                
+                <form action="{{ url_for('sensitivity_analysis') }}" method="post" class="mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_name" class="form-label">選擇主要特徵</label>
+                                <select class="form-select" id="feature_name" name="feature_name" required>
+                                    <option value="" selected disabled>-- 請選擇特徵 --</option>
+                                    {% for feature in features %}
+                                    <option value="{{ feature }}">{{ feature }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_name2" class="form-label">選擇次要特徵 (可選，用於交互分析)</label>
+                                <select class="form-select" id="feature_name2" name="feature_name2">
+                                    <option value="">-- 無 (僅分析單一特徵) --</option>
+                                    {% for feature in features %}
+                                    <option value="{{ feature }}">{{ feature }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>執行敏感性分析
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-arrow-left me-2"></i>返回預測結果
+                        </a>
+                    </div>
+                </form>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>敏感性分析說明</h5>
+                    <p>敏感性分析會顯示：</p>
+                    <ul>
+                        <li><strong>單一特徵分析</strong>：顯示該特徵在不同值下對疲勞壽命的影響，其他變數保持不變</li>
+                        <li><strong>特徵交互分析</strong>：顯示兩個特徵如何共同影響疲勞壽命，使用熱圖顯示交互效應</li>
+                    </ul>
+                    <p>建議分析的特徵：</p>
+                    <ul>
+                        <li>幾何特徵 (Die、stud、mold、PCB)</li>
+                        <li>應力特徵 (NLPLWK_up_*、NLPLWK_down_*)</li>
+                        <li>應變特徵 (Acc_Equi_Strain_*)</li>
+                        <li>翹曲相關特徵 (Total_warpage、Unit_warpage)</li>
+                    </ul>
+                    <p>敏感性分析結果可幫助設計師確定哪些參數最需優化以延長疲勞壽命。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 防止選擇相同的特徵進行交互分析
+    document.getElementById('feature_name2').addEventListener('change', function() {
+        var firstFeature = document.getElementById('feature_name').value;
+        var secondFeature = this.value;
+        
+        if (firstFeature === secondFeature && secondFeature !== '') {
+            alert('請選擇不同於主要特徵的次要特徵');
+            this.value = '';
+        }
+    });
+    
+    document.getElementById('feature_name').addEventListener('change', function() {
+        var firstFeature = this.value;
+        var secondFeature = document.getElementById('feature_name2').value;
+        
+        if (firstFeature === secondFeature && secondFeature !== '') {
+            document.getElementById('feature_name2').value = '';
+        }
+    });
+</script>
+{% endblock %}

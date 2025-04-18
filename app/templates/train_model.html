@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}訓練新模型 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cogs me-2"></i>訓練新模型
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    使用當前上傳的數據訓練新的機器學習模型。您可以選擇模型類型、是否調整超參數，並設定自定義模型名稱。
+                </p>
+                
+                <form action="{{ url_for('train_new_model') }}" method="post" class="mb-4">
+                    <div class="mb-3">
+                        <label for="model_type" class="form-label">選擇模型類型</label>
+                        <select class="form-select" id="model_type" name="model_type" required>
+                            <option value="random_forest" selected>隨機森林 (Random Forest)</option>
+                            <option value="gradient_boosting">梯度提升樹 (Gradient Boosting)</option>
+                            <option value="svr">支持向量迴歸 (SVR)</option>
+                            <option value="multiple">訓練多個模型並選擇最佳模型</option>
+                        </select>
+                        <div class="form-text">推薦使用隨機森林或多個模型選項</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="tune_hyperparams" name="tune_hyperparams" checked>
+                            <label class="form-check-label" for="tune_hyperparams">
+                                自動調整超參數 (提高模型性能，但訓練時間更長)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model_name" class="form-label">模型名稱</label>
+                        <input type="text" class="form-control" id="model_name" name="model_name" placeholder="例如: my_model_v1" required>
+                        <div class="form-text">建議使用有意義的名稱，例如包含模型類型和版本信息</div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>注意</strong>：根據數據規模和模型複雜度，訓練過程可能需要幾秒到幾分鐘不等。
+                        訓練期間請勿關閉頁面或重新整理。
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>開始訓練
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-arrow-left me-2"></i>返回首頁
+                        </a>
+                    </div>
+                </form>
+                
+                <div class="card mt-4">
+                    <div class="card-header bg-light">
+                        <i class="fas fa-info-circle me-2"></i>模型說明
+                    </div>
+                    <div class="card-body">
+                        <h5>隨機森林 (Random Forest)</h5>
+                        <p>
+                            隨機森林是一種集成學習方法，通過組合多個決策樹的預測來提高準確性和減少過擬合。
+                            適合處理非線性關係和高維特徵空間，對噪聲和離群值也有較強的抵抗力。
+                            在銲錫接點疲勞壽命預測中表現優秀，尤其適合小樣本數據集。
+                        </p>
+                        
+                        <h5>梯度提升樹 (Gradient Boosting)</h5>
+                        <p>
+                            梯度提升樹是另一種集成學習方法，通過序列化地訓練新模型來糾正前一個模型的錯誤。
+                            通常能提供比隨機森林更高的預測準確度，但調參更複雜且容易過擬合。
+                            在處理複雜的非線性關係和特徵交互時表現尤為出色。
+                        </p>
+                        
+                        <h5>支持向量迴歸 (SVR)</h5>
+                        <p>
+                            支持向量迴歸使用核函數將數據映射到高維空間，在容忍誤差的前提下尋找最佳擬合超平面。
+                            對於中小型數據集和非線性關係的建模表現良好，但計算複雜度高於樹模型。
+                            在一些特定的材料科學預測問題中，SVR可能優於其他模型。
+                        </p>
+                        
+                        <h5>訓練多個模型</h5>
+                        <p>
+                            此選項將同時訓練隨機森林、梯度提升樹、SVR和線性迴歸模型，
+                            然後自動選擇表現最佳的模型（基於均方根誤差）。
+                            這是一種較為保守但可靠的方法，適合不確定哪種模型最適合您的數據的情況。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

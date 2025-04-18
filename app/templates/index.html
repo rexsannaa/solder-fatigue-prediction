@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}首頁 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-5">銲錫接點疲勞壽命預測系統</h1>
+            <p class="lead">基於機器學習的銲錫接點疲勞壽命快速預測工具，可替代傳統耗時的CAE模擬過程。</p>
+            <hr class="my-4">
+            <p>通過上傳特徵數據，系統可在幾秒鐘內預測疲勞壽命，並提供詳細的分析結果和可視化圖表。</p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('upload_file') }}" role="button">
+                <i class="fas fa-upload me-2"></i>上傳數據開始使用
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="fas fa-upload me-2"></i>上傳數據
+            </div>
+            <div class="card-body">
+                <p>上傳包含銲錫接點特徵參數的CSV或Excel檔案，系統將自動進行數據處理與特徵工程。</p>
+                <a href="{{ url_for('upload_file') }}" class="btn btn-outline-primary">開始上傳</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="fas fa-tasks me-2"></i>批量預測
+            </div>
+            <div class="card-body">
+                <p>批量上傳多條數據，使用訓練好的模型進行快速批量預測，輸出包含預測結果的CSV檔案。</p>
+                <a href="{{ url_for('batch_predict') }}" class="btn btn-outline-primary">批量預測</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="fas fa-cogs me-2"></i>訓練新模型
+            </div>
+            <div class="card-body">
+                <p>使用您的數據訓練新的機器學習模型，支持隨機森林、梯度提升樹、SVM等多種算法。</p>
+                {% if has_data %}
+                <a href="{{ url_for('train_new_model') }}" class="btn btn-outline-primary">訓練模型</a>
+                {% else %}
+                <button class="btn btn-outline-secondary" disabled>請先上傳數據</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if has_prediction %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-line me-2"></i>最近預測結果
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>預測概述</h5>
+                        <table class="table table-striped">
+                            <tr>
+                                <th>模型名稱</th>
+                                <td>{{ prediction_results.model_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>RMSE</th>
+                                <td>{{ prediction_results.metrics.rmse|round(4) }}</td>
+                            </tr>
+                            <tr>
+                                <th>R²</th>
+                                <td>{{ prediction_results.metrics.r2|round(4) }}</td>
+                            </tr>
+                            <tr>
+                                <th>結果下載</th>
+                                <td>
+                                    <a href="{{ url_for('download_file', filename=prediction_results.result_csv_path) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-download me-1"></i>下載結果
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="plot-container">
+                            <img src="{{ url_for('static', filename='results/' + prediction_results.actual_vs_pred_path) }}" alt="預測結果對比" class="img-fluid">
+                            <p class="mt-2"><small class="text-muted">實際值與預測值對比圖</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('sensitivity_analysis') }}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-chart-bar me-1"></i>進行敏感性分析
+                    </a>
+                    <a href="{{ url_for('predict') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-redo me-1"></i>重新預測
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-database me-2"></i>可用模型列表
+            </div>
+            <div class="card-body">
+                {% if models %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>模型名稱</th>
+                                <th>檔案大小</th>
+                                <th>修改日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for model in models %}
+                            <tr>
+                                <td>{{ model.name }}</td>
+                                <td>{{ model.size }}</td>
+                                <td>{{ model.modified }}</td>
+                                <td>
+                                    {% if has_data %}
+                                    <form action="{{ url_for('predict') }}" method="post" class="d-inline">
+                                        <input type="hidden" name="model_path" value="{{ model.path }}">
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-play me-1"></i>使用此模型
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <button class="btn btn-sm btn-secondary" disabled>請先上傳數據</button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    尚無可用模型。請先上傳數據並訓練模型。
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-lightbulb me-2"></i>使用提示
+            </div>
+            <div class="card-body">
+                <h5>CSV/Excel檔案格式要求</h5>
+                <ul>
+                    <li>數據文件必須包含特徵列和目標變數列</li>
+                    <li>建議特徵包括：幾何參數(Die、stud、mold、PCB)、翹曲參數、應力應變等</li>
+                    <li>目標變數列通常命名為"Nf_pred"或"Nf_pred (cycles)"</li>
+                    <li>確保數據不包含過多缺失值</li>
+                </ul>
+                <h5>最佳實踐建議</h5>
+                <ul>
+                    <li>上傳數據後，先檢查數據預覽和基本統計信息</li>
+                    <li>考慮對不同模型進行比較，以找出最適合您數據的模型</li>
+                    <li>利用敏感性分析功能了解哪些特徵對預測結果影響最大</li>
+                    <li>批量預測結束後，請下載並保存結果文件</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

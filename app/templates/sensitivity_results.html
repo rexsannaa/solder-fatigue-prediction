@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}敏感性分析結果 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-2"></i>敏感性分析結果
+            </div>
+            <div class="card-body">
+                <h4 class="mb-4">特徵敏感性分析結果</h4>
+                
+                <div class="mb-4">
+                    <h5><i class="fas fa-info-circle me-2"></i>分析說明</h5>
+                    <p>
+                        敏感性分析顯示了特徵值的變化如何影響疲勞壽命預測。曲線的斜率表示該特徵的影響程度，
+                        斜率越大表示該特徵對疲勞壽命的影響越顯著。
+                    </p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <i class="fas fa-chart-line me-2"></i>{{ feature_name }} 敏感性分析
+                            </div>
+                            <div class="card-body">
+                                <div class="plot-container">
+                                    <img src="{{ url_for('static', filename='results/' + sensitivity_path) }}" alt="敏感性分析" class="img-fluid">
+                                </div>
+                                <div class="mt-3">
+                                    <h6>分析解讀</h6>
+                                    <ul>
+                                        <li>曲線斜率為正，表示增加 {{ feature_name }} 的值會提高疲勞壽命</li>
+                                        <li>曲線斜率為負，表示增加 {{ feature_name }} 的值會降低疲勞壽命</li>
+                                        <li>曲線平坦，表示 {{ feature_name }} 對疲勞壽命影響不大</li>
+                                        <li>曲線非線性，表示 {{ feature_name }} 的影響在不同值範圍內有所不同</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if interaction_path %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <i class="fas fa-project-diagram me-2"></i>{{ feature_name }} 和 {{ feature_name2 }} 的交互影響
+                            </div>
+                            <div class="card-body">
+                                <div class="plot-container">
+                                    <img src="{{ url_for('static', filename='results/' + interaction_path) }}" alt="特徵交互分析" class="img-fluid">
+                                </div>
+                                <div class="mt-3">
+                                    <h6>交互分析解讀</h6>
+                                    <ul>
+                                        <li>熱圖顏色從深到淺表示預測的疲勞壽命從低到高</li>
+                                        <li>等高線表示疲勞壽命相等的特徵組合</li>
+                                        <li>等高線密集區域表示這些特徵組合對疲勞壽命影響敏感</li>
+                                        <li>等高線稀疏區域表示這些特徵組合對疲勞壽命影響較小</li>
+                                        <li>紅色十字標記表示數據集中的平均特徵值</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <i class="fas fa-lightbulb me-2"></i>設計建議
+                            </div>
+                            <div class="card-body">
+                                <p>
+                                    根據敏感性分析結果，您可以考慮以下設計策略來優化疲勞壽命：
+                                </p>
+                                <ul>
+                                    <li>
+                                        如果 {{ feature_name }} 對疲勞壽命有正向影響：
+                                        在可行的設計範圍內盡可能增加此特徵的值
+                                    </li>
+                                    <li>
+                                        如果 {{ feature_name }} 對疲勞壽命有負向影響：
+                                        在可行的設計範圍內盡可能減少此特徵的值
+                                    </li>
+                                    {% if interaction_path %}
+                                    <li>
+                                        注意 {{ feature_name }} 和 {{ feature_name2 }} 的交互影響：
+                                        尋找熱圖中顯示疲勞壽命最高的特徵值組合
+                                    </li>
+                                    {% endif %}
+                                    <li>
+                                        如果曲線呈現最佳值（先上升後下降的模式）：
+                                        將 {{ feature_name }} 的值設定在該最佳點附近
+                                    </li>
+                                </ul>
+                                <p>
+                                    敏感性分析僅考慮單個特徵的影響，實際設計時需要綜合考慮多個因素，
+                                    包括製造可行性、成本、其他性能指標等。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <a href="{{ url_for('sensitivity_analysis') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-chart-bar me-2"></i>分析其他特徵
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>返回首頁
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}上傳數據 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-upload me-2"></i>上傳數據文件
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    請上傳含有銲錫接點特徵參數的CSV或Excel檔案。系統將自動進行數據處理與特徵工程，然後您可以選擇模型進行預測。
+                </p>
+                
+                <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="mb-4">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">選擇文件 (支援格式: CSV, Excel)</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+                        <div class="form-text">檔案大小上限為 16MB</div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>上傳並處理數據
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-arrow-left me-2"></i>返回首頁
+                        </a>
+                    </div>
+                </form>
+
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>檔案格式說明</h5>
+                    <p>要獲得最佳結果，您的數據檔案應包含以下內容：</p>
+                    <ul>
+                        <li><strong>幾何參數</strong>：Die、stud、mold、PCB 等尺寸參數</li>
+                        <li><strong>翹曲參數</strong>：Total_warpage、Unit_warpage 等</li>
+                        <li><strong>應力參數</strong>：各時間點的 NLPLWK 數值 (如 NLPLWK_up_14400, NLPLWK_down_14400 等)</li>
+                        <li><strong>應變參數</strong>：Acc_Equi_Strain_up、Acc_Equi_Strain_down、Acc_Equi_Strain_max 等</li>
+                        <li><strong>目標變數</strong>：Nf_pred 或 Nf_pred (cycles) - 實際疲勞壽命值</li>
+                    </ul>
+                    <p>檔案中的第一行應為列標題，不應包含缺失值或異常值。</p>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header bg-light">
+                        <i class="fas fa-download me-2"></i>下載範例檔案
+                    </div>
+                    <div class="card-body">
+                        <p>您可以下載範例資料檔案作為參考：</p>
+                        <a href="{{ url_for('static', filename='examples/sample_data.csv') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-file-csv me-1"></i>下載範例CSV檔案
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

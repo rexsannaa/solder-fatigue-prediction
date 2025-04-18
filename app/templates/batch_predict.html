@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}批量預測 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-tasks me-2"></i>批量預測
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    上傳含有銲錫接點特徵參數的CSV或Excel檔案，使用訓練好的模型進行批量預測。
+                    系統將產生包含預測疲勞壽命值的結果檔案。
+                </p>
+                
+                <form action="{{ url_for('batch_predict') }}" method="post" enctype="multipart/form-data" class="mb-4">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">選擇特徵數據檔案 (支援格式: CSV, Excel)</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+                        <div class="form-text">檔案大小上限為 16MB</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="model_path" class="form-label">選擇預訓練模型</label>
+                        <select class="form-select" id="model_path" name="model_path" required>
+                            <option value="" selected disabled>-- 請選擇模型 --</option>
+                            {% for model in models %}
+                            <option value="{{ model.path }}">{{ model.name }} ({{ model.size }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>重要說明</strong>：您上傳的數據必須包含與訓練模型時使用的相同特徵。
+                        如果缺少必要特徵，系統將無法進行預測。
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>開始批量預測
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-home me-2"></i>返回首頁
+                        </a>
+                    </div>
+                </form>
+                
+                <div class="card mt-4">
+                    <div class="card-header bg-light">
+                        <i class="fas fa-file-alt me-2"></i>數據格式要求
+                    </div>
+                    <div class="card-body">
+                        <h5>檔案必須包含以下特徵列：</h5>
+                        <ul class="mb-4">
+                            <li>幾何特徵 (Die, stud, mold, PCB 等)</li>
+                            <li>翹曲特徵 (Total_warpage, Unit_warpage 等)</li>
+                            <li>應力應變特徵 (NLPLWK_*, Acc_Equi_Strain_* 等)</li>
+                            <li>其他模型訓練時使用的特徵</li>
+                        </ul>
+                        
+                        <h5>注意事項：</h5>
+                        <ul>
+                            <li>列名必須與模型訓練時使用的特徵名稱完全匹配</li>
+                            <li>數據類型應與訓練數據一致</li>
+                            <li>檔案第一行應為標題行（特徵名稱）</li>
+                            <li>如果數據缺少某些必要特徵，系統將返回錯誤</li>
+                            <li>預測結果將作為新列"預測疲勞壽命"添加到原始數據中</li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <h5>下載範例檔案：</h5>
+                            <a href="{{ url_for('static', filename='examples/batch_prediction_template.csv') }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-file-csv me-1"></i>下載範例批量預測檔案
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

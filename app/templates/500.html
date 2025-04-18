@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}服務器錯誤 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2 text-center">
+        <div class="card">
+            <div class="card-body py-5">
+                <h1 class="display-1 text-danger">500</h1>
+                <h2 class="mb-4">服務器內部錯誤</h2>
+                <p class="lead mb-4">抱歉，系統處理您的請求時發生錯誤。</p>
+                <p>可能的原因：</p>
+                <ul class="list-unstyled">
+                    <li>服務器暫時不可用</li>
+                    <li>系統正在進行維護</li>
+                    <li>處理請求時遇到未預期的錯誤</li>
+                </ul>
+                <div class="mt-5">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-2">
+                        <i class="fas fa-home me-2"></i>返回首頁
+                    </a>
+                    <button class="btn btn-outline-secondary btn-lg" onclick="window.location.reload();">
+                        <i class="fas fa-redo me-2"></i>重新整理
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

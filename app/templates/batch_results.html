@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}批量預測結果 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-check-circle me-2"></i>批量預測完成
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success mb-4">
+                    <i class="fas fa-check-circle me-2"></i>
+                    批量預測已成功完成！共處理了 <strong>{{ sample_count }}</strong> 筆數據。
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>預測概述</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>檔案名稱</th>
+                                <td>{{ file_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>模型</th>
+                                <td>{{ model_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>數據筆數</th>
+                                <td>{{ sample_count }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <i class="fas fa-download me-2"></i>下載結果
+                            </div>
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <a href="{{ url_for('download_file', filename=result_filename) }}" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-file-download me-2"></i>下載預測結果檔案 (CSV)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>預測結果樣本 (顯示前10筆)</h5>
+                        <div class="table-responsive">
+                            {{ sample_results|safe }}
+                        </div>
+                        <p class="text-muted"><small>表格僅顯示前10筆結果，完整結果請下載CSV檔案。</small></p>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <a href="{{ url_for('batch_predict') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-redo me-2"></i>進行另一次批量預測
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>返回首頁
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-lightbulb me-2"></i>後續操作建議
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>數據分析建議</h5>
+                        <ul>
+                            <li>將下載的CSV檔案導入Excel或其他數據分析工具</li>
+                            <li>分析預測疲勞壽命與各特徵參數的關係</li>
+                            <li>根據預測結果對銲錫接點設計進行優化</li>
+                            <li>可視化預測結果，幫助發現數據模式</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>設計最佳化建議</h5>
+                        <ul>
+                            <li>根據預測結果篩選出疲勞壽命最長的設計參數組合</li>
+                            <li>評估不同設計參數對疲勞壽命的敏感性</li>
+                            <li>在保證結構強度的前提下，最小化應力集中</li>
+                            <li>考慮製造可行性和成本約束條件進行全面優化</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

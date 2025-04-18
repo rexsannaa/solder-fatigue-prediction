@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}數據預覽 - 銲錫接點疲勞壽命預測系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-table me-2"></i>數據處理結果
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>數據概述</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>數據行數</th>
+                                <td>{{ data_info.rows }}</td>
+                            </tr>
+                            <tr>
+                                <th>原始列數</th>
+                                <td>{{ data_info.columns }}</td>
+                            </tr>
+                            <tr>
+                                <th>目標變數</th>
+                                <td>{{ data_info.target_column }}</td>
+                            </tr>
+                            <tr>
+                                <th>處理後特徵數</th>
+                                <td>{{ data_info.features_count }}</td>
+                            </tr>
+                            <tr>
+                                <th>缺失值數量</th>
+                                <td>{{ data_info.missing_values }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="plot-container">
+                            <img src="{{ url_for('static', filename='results/' + data_info.target_hist) }}" alt="目標變數分佈" class="img-fluid">
+                            <p class="mt-2"><small class="text-muted">目標變數 ({{ data_info.target_column }}) 分佈圖</small></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h5>相關性熱圖</h5>
+                        <div class="plot-container">
+                            <img src="{{ url_for('static', filename='results/' + data_info.correlation_map) }}" alt="相關性熱圖" class="img-fluid">
+                            <p class="mt-2"><small class="text-muted">特徵相關性熱圖 (只顯示上三角形部分)</small></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h5>數據樣本 (前5行)</h5>
+                        <div class="table-responsive">
+                            {{ data_info.sample_data|safe }}
+                        </div>
+                        <p class="text-muted"><small>表格僅顯示前5行數據，實際處理的資料包含所有行。</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-line me-2"></i>開始預測
+            </div>
+            <div class="card-body">
+                <h5>選擇模型進行預測</h5>
+                <p class="text-muted mb-4">
+                    選擇一個預訓練模型來預測您的數據。系統將使用您上傳的數據計算疲勞壽命預測值，並提供各種評估指標和可視化結果。
+                </p>
+                
+                <form action="{{ url_for('predict') }}" method="post">
+                    <div class="mb-3">
+                        <label for="model_path" class="form-label">選擇預訓練模型</label>
+                        <select class="form-select" id="model_path" name="model_path" required>
+                            <option value="" selected disabled>-- 請選擇模型 --</option>
+                            {% for model in models %}
+                            <option value="{{ model.path }}">{{ model.name }} ({{ model.size }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>開始預測
+                        </button>
+                        <a href="{{ url_for('train_new_model') }}" class="btn btn-outline-success ms-2">
+                            <i class="fas fa-cogs me-2"></i>訓練新模型
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-home me-2"></i>返回首頁
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
