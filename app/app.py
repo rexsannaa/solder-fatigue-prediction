@@ -23,6 +23,8 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from werkzeug.utils import secure_filename
 import logging
+import torch.nn as nn
+
 
 # 添加父目錄到路徑，以便導入其他模組
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
