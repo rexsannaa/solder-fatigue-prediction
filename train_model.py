@@ -208,13 +208,13 @@ def main():
             )
             
             # 殘差分析圖
-            evaluator.plot_residuals(
-                y_test, 
-                predictor.predict(X_test),
-                model_name=best_model_name,
-                save_fig=True,
-                show_fig=False
-            )
+            #evaluator.plot_residuals(
+            #    y_test, 
+            #    predictor.predict(X_test),
+            #    model_name=best_model_name,
+            #    save_fig=True,
+            #    show_fig=False
+            #)
             
             # 嘗試繪製特徵重要性圖
             if hasattr(predictor.best_model, 'feature_importances_'):

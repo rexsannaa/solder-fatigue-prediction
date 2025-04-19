@@ -1,0 +1,21 @@
+2025-04-19 16:32:02 - solder_fatigue_prediction - INFO - 開始訓練模型，參數: Namespace(data_path='data/processed/Training_data_warpage_final_20250321_v1.2.csv', target_column='Nf_pred (cycles)', model_type='multiple', output_path='models/best_model.pkl', test_size=0.2, tune_hyperparams=True, feature_engineering=True, log_file='logs/training.log', figures_dir='figures', cv=5, random_state=42)
+2025-04-19 16:32:02 - solder_fatigue_prediction - INFO - 正在從 data/processed/Training_data_warpage_final_20250321_v1.2.csv 載入數據...
+2025-04-19 16:32:02 - solder_fatigue_prediction - INFO - 數據載入成功，形狀: (81, 18)
+2025-04-19 16:32:02 - solder_fatigue_prediction - INFO - 開始進行數據處理與特徵工程...
+2025-04-19 16:32:02 - solder_fatigue_prediction - INFO - 數據處理完成: 訓練集 (47, 7), 測試集 (12, 7)
+2025-04-19 16:32:02 - solder_fatigue_prediction - INFO - 選擇模型類型: multiple
+2025-04-19 16:32:04 - solder_fatigue_prediction - INFO - 開始訓練模型...
+2025-04-19 16:32:04 - solder_fatigue_prediction - INFO - 訓練模型: random_forest
+2025-04-19 16:32:10 - solder_fatigue_prediction - INFO - 模型 random_forest 評估: RMSE=0.3975, MAE=0.2602, R²=0.8000
+2025-04-19 16:32:10 - solder_fatigue_prediction - INFO - 訓練模型: gradient_boosting
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 模型 gradient_boosting 評估: RMSE=0.6946, MAE=0.4143, R²=0.3893
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 訓練模型: svr
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 模型 svr 評估: RMSE=0.4866, MAE=0.3612, R²=0.7003
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 訓練模型: linear
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 模型 linear 評估: RMSE=0.8962, MAE=0.7318, R²=-0.0166
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 模型訓練完成，耗時: 6.43 秒
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 最佳模型: random_forest, RMSE: 0.3975
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 模型已保存至: models/best_model.pkl
+2025-04-19 16:32:11 - solder_fatigue_prediction - INFO - 生成評估圖表...
+2025-04-19 16:32:12 - solder_fatigue_prediction - ERROR - 生成評估圖表時出錯: 'ModelEvaluator' object has no attribute 'plot_residuals'
+2025-04-19 16:32:12 - solder_fatigue_prediction - INFO - 全部流程完成!
