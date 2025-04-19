@@ -7,29 +7,20 @@ dependencies:
   - numpy
   - pandas
   - scikit-learn
-  - xgboost
-  - lightgbm
   - matplotlib
   - seaborn
-  - jupyter
-  - notebook
-  - Flask
-  - pytest
+  - pytorch
+  - flask
   - scipy
   - joblib
-  - plotly
-  - streamlit
-  - shap
-  - pytest-cov
-  - black
-  - flake8
-  - isort
-  - pre-commit
-  - git
+  - ipython
+  - jupyter
+  - xgboost
   - pip
   - pip:
     - optuna
-    - mlflow
+    - shap
+    - plotly
     - dash
     - pyyaml
     - python-dotenv
