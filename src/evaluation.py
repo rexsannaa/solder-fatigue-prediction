@@ -27,7 +27,27 @@ import logging
 import json
 from datetime import datetime
 import pickle
+# 設置中文字體支持
+import matplotlib as mpl
+import platform
 
+# 根據不同操作系統設置不同的字體
+system = platform.system()
+if system == 'Windows':
+    # Windows系統使用微軟雅黑或新細明體
+    mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'NSimSun', 'Arial Unicode MS']
+elif system == 'Darwin':  # macOS
+    # macOS使用蘋方或儷黑Pro
+    mpl.rcParams['font.sans-serif'] = ['PingFang TC', 'Heiti TC', 'STHeiti', 'Arial Unicode MS']
+else:  # Linux/其他
+    # Linux使用文泉驛或思源黑體
+    mpl.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei', 'Noto Sans CJK TC', 'Noto Sans TC', 'Arial Unicode MS']
+
+# 確保負號正確顯示
+mpl.rcParams['axes.unicode_minus'] = False
+
+# 設置全局字體大小
+mpl.rcParams['font.size'] = 12
 # 配置日誌
 logging.basicConfig(
     level=logging.INFO,

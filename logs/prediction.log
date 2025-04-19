@@ -1,0 +1,11 @@
+2025-04-19 16:59:25 - solder_fatigue_prediction - INFO - 開始預測，參數: Namespace(data_path='data/processed/Training_data_warpage_final_20250321_v1.2.csv', model_path='models/best_model.pkl', output_path='results/predictions.csv', log_file='logs/prediction.log', has_target=True, target_column='Nf_pred (cycles)')
+2025-04-19 16:59:25 - solder_fatigue_prediction - INFO - 正在載入模型: models/best_model.pkl
+2025-04-19 16:59:25 - solder_fatigue_prediction - INFO - 模型載入成功，最佳模型: random_forest
+2025-04-19 16:59:25 - solder_fatigue_prediction - INFO - 正在從 data/processed/Training_data_warpage_final_20250321_v1.2.csv 載入數據...
+2025-04-19 16:59:25 - solder_fatigue_prediction - INFO - 數據載入成功，形狀: (81, 18)
+2025-04-19 16:59:25 - solder_fatigue_prediction - ERROR - 預測過程中出錯: 數據缺少以下必要特徵: die_pcb_ratio, stud_mold_ratio
+2025-04-19 16:59:25 - solder_fatigue_prediction - ERROR - Traceback (most recent call last):
+  File "C:\Users\a\Desktop\畢業論文\CAE\codev2\predict.py", line 86, in main
+    raise ValueError(f"數據缺少以下必要特徵: {', '.join(missing_features)}")
+ValueError: 數據缺少以下必要特徵: die_pcb_ratio, stud_mold_ratio
+
