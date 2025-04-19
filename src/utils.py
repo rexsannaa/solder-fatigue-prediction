@@ -30,7 +30,7 @@ from sklearn.metrics import explained_variance_score, max_error, median_absolute
 from sklearn.model_selection import learning_curve
 
 # 設定默認風格
-plt.style.use('seaborn-whitegrid')
+#plt.style.use('seaborn-whitegrid')
 sns.set_palette("muted")
 
 # 配置日誌
